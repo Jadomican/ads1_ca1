@@ -28,32 +28,33 @@ int main()
 
 	if (pdir == NULL)
 	{
-		cout << "pdir not initialised correctly";
-		exit(1);
+	cout << "pdir not initialised correctly";
+	exit(1);
 	}
 
 	cout << "LISTING DIRECTORY CONTENTS\n";
 	while (pent = readdir(pdir)) //while something left to list
 	{
-		if (pent == NULL)
-		{
-			cout << "pent not initialised correctly";
-			exit(1);
-		}
-		
-		cout << pent->d_name << endl;
+	if (pent == NULL)
+	{
+	cout << "pent not initialised correctly";
+	exit(1);
+	}
+
+	cout << pent->d_name << endl;
 	}
 
 	closedir(pdir);
 
 	*/
+
 	//string directory;
 
-	cout << "**Plagiarism Detector**\n\n";
+	cout << "**Plagiarism Detector**";
 	//cout << "Enter the directory to be scanned: ";
 	//cin >> directory;
 
-	
+
 	//USES windows.h RATHER THAN DIRENT!!
 
 	const int NUM_FILES = 4;	//number of files to be processed
@@ -67,33 +68,44 @@ int main()
 *    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
 ***************************************************************************************/
 
-	array_of_indexes[0].count_iterative = 1;
-	array_of_indexes[0].count_selective = 1; //	USE TO COUNT MATCHES OF ITERATIVE AND SELECTIVE
-
 
 	for (int i = 0; i < NUM_FILES; i++)
 	{
-		int test = 0;
+		array_of_indexes[i].count_iterative = 0;
+		array_of_indexes[i].count_selective = 0; //	USE TO COUNT MATCHES OF ITERATIVE AND SELECTIVE
+
+		string line;
 		stringstream file_path;
-		file_path << "./files/file" << i+1 << ".cpp";
+		file_path << "./files/file" << i + 1 << ".cpp";
 
 		ifstream inFile;		//reading in
 		inFile.open(file_path.str()); //pass in file_path as string
 
-		//have while here to read entire file?
-			inFile >> test;
+		cout << "\n\n" << file_path.str() << " \n";
+		while (!inFile.eof()) {
 
+			inFile >> line;
 
-		cout << file_path.str() << ": " << test << "\n\n";
+			//check if contains selective/iterative
+
+			if (line == "int")
+			{
+				array_of_indexes[i].count_iterative++;
+			}
+
+			cout << line;
+
+		}
 
 		inFile.close(); //remember to close file
 
+		cout << "FILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n\n";
+
+
+
 	}
 
-	//ofstream outfile; //don't need to write to file? Get rid of it?
-	//outfile.open(directory, ios::app);
-	//outfile.close();
-	
+	cout << endl;
 	system("pause");
 	return 0;
 }
