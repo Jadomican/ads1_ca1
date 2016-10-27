@@ -1,8 +1,13 @@
 #ADS1 CA1
 ##Elapsed CA1 (JASON DOMICAN & ROBERT FITZGERALD)
 
+![FOGGY](http://vignette2.wikia.nocookie.net/looneytunes/images/7/79/Foghorn_Leghorn.jpg/revision/latest?cb=20130223190707)
+
+
 PROJECT IS TO CREATE A PLAGIARISM DETECTION PROGRAM
 B.Sc. in Computing ADS1 Practical 1 18% 17 November 2016
+ 
+ 
  
 Due Date: Thursday **17 November 2016**
 
