@@ -6,8 +6,8 @@
 
 struct SimilarityIndex
 {
-	int countSomething;
-	int countOther;
+	int count_iterative;
+	int count_selective;
 };
 
 #endif
