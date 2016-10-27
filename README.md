@@ -60,3 +60,25 @@ You could then make an array of similarity indexes (see example below). If you
 then sort this array you will have alike indexes beside each other.
 const size_t file_n = 4;
 SimilarityIndex_t arrayOfFileIndexes[file_n]; 
+
+SELECTION STATEMENTS:
+* IF
+* ELSE
+* SWITCH
+* CASE 
+* DEFAULT
+
+ITERATION STATEMENTS:
+* DO
+* WHILE
+* FOR
+* FOREACH
+* IN
+
+JUMP STATEMENTS:
+* BREAK
+* CONTINUE
+* RETURN
+* GOTO
+
+REF https://msdn.microsoft.com/en-ie/library/7ftwh93a.aspx
