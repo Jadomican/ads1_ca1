@@ -1,14 +1,10 @@
-# ads1_ca1
-Elapsed CA1
+#ADS1 CA1
+##Elapsed CA1 (JASON DOMICAN & ROBERT FITZGERALD)
 
-JASON DOMICAN
-
-ROBERT FITZGERALD
-
-#PROJECT IS TO CREATE A PLAGIARISM DETECTION PROGRAM
- B.Sc. in Computing ADS1 Practical 1 18% 17 November 2016
+PROJECT IS TO CREATE A PLAGIARISM DETECTION PROGRAM
+B.Sc. in Computing ADS1 Practical 1 18% 17 November 2016
  
-Due Date: Thursday 17 November 2016
+Due Date: Thursday **17 November 2016**
 
 Upload each .h and .cpp file which you have written to Moodle.
 Note: You should separate each class you create into .cpp and .h files. And you should
@@ -21,7 +17,7 @@ the CA.
 You have to write a plagiarism detector for a group of C++ files. You program
 needs to be able to open a directory and process a maximum of 4 .cpp files
 contained in the directory, however, the program should be designed that it works
-with any file name and could with a simple change be able to process more than
+with **any file name** and could with a simple change be able to process more than
 4 files).
 You program will:
 1. Take as an input a directory location (where the files to be scanned are
