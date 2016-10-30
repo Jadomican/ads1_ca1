@@ -18,37 +18,43 @@ using namespace std;
 int main()
 {
 	const int NUM_FILES = 4;	//number of files to be processed
-	SimilarityIndex array_of_indexes[NUM_FILES]; //SHOULD WE INCLUDE A STRING VARIABLE INSIDE THE STRUCT?
+	SimilarityIndex array_of_indexes[NUM_FILES]; //SHOULD WE INCLUDE A STRING (file_name) VARIABLE INSIDE THE STRUCT?
 
 	string directory;
 	cout << "**Plagiarism Detector**";
 	cout << "Input directory to be scanned: (HINT: Try ./files/)" << endl;
 	cin >> directory;
 
+	while (directory.back() != '/')
+	{
+		cout << "Please include a '/' at the end of your directory\n";
+		cin >> directory;
+	}
+
 	vector<string> file_names = vector<string>();
 
 	DIR *pdir = NULL; // struct in dirent.h (Line 256)
 	struct dirent *pent = NULL;
 
+	//cout << directory.back();
 
 	/***************************************************************************************
 	*    Usage: modified
 	*    Title: Converting String to Cstring in c++
 	*    Date: 30/10/2016
 	*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
-	*
 	***************************************************************************************/
 
 	pdir = opendir(directory.c_str()); //files folder INSIDE current directory
 
 	if (pdir == NULL)
 	{
-		cout << "pdir not initialised correctly";
+		cout << "\npdir not initialised correctly\n";
+		system("pause");
 		exit(1);
 	}
 
 	cout << "LISTING DIRECTORY CONTENTS\n";
-
 	//for (int i = 0; i < NUM_FILES +2; i++) //MAX 4 FILES
 	//{
 	//	pent = readdir(pdir);
@@ -86,9 +92,7 @@ int main()
 		//cout << file_names_strings[i] << endl;
 	}
 
-	closedir(pdir);
-
-
+	closedir(pdir); //close the directory when done reading
 
 	/***************************************************************************************
 	*    Usage: based on
@@ -123,7 +127,7 @@ int main()
 
 		inFile.close(); //remember to close file
 
-		cout << "\nFILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n\n";
+		cout << "\nFILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
 
 	}
 
@@ -131,3 +135,6 @@ int main()
 	system("pause");
 	return 0;
 }
+
+
+//http://www.cplusplus.com/reference/string/string/back/
