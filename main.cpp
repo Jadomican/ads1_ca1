@@ -30,7 +30,16 @@ int main()
 	DIR *pdir = NULL; // struct in dirent.h (Line 256)
 	struct dirent *pent = NULL;
 
-	pdir = opendir("./files/"); //files folder INSIDE current directory
+
+	/***************************************************************************************
+	*    Usage: modified
+	*    Title: Converting String to Cstring in c++
+	*    Date: 30/10/2016
+	*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
+	*
+	***************************************************************************************/
+
+	pdir = opendir(directory.c_str()); //files folder INSIDE current directory
 
 	if (pdir == NULL)
 	{
