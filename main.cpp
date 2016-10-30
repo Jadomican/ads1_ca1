@@ -9,27 +9,28 @@ ADS1 Practical 1
 #include <string>
 #include <fstream>
 #include <Windows.h>
-#include "dirent.h"
 #include <sstream>
 #include <vector>
-
-
+#include "dirent.h"
 #include "similarity_index.h"
 using namespace std;
 
 int main()
 {
 	const int NUM_FILES = 4;	//number of files to be processed
-	SimilarityIndex array_of_indexes[NUM_FILES]; //	NOT YET USED
+	SimilarityIndex array_of_indexes[NUM_FILES]; //SHOULD WE INCLUDE A STRING VARIABLE INSIDE THE STRUCT?
 
-	//string file_names_strings[NUM_FILES];
+	string directory;
+	cout << "**Plagiarism Detector**";
+	cout << "Input directory to be scanned: (HINT: Try ./files/)" << endl;
+	cin >> directory;
 
 	vector<string> file_names = vector<string>();
 
 	DIR *pdir = NULL; // struct in dirent.h (Line 256)
 	struct dirent *pent = NULL;
 
-	pdir = opendir("./files"); //files folder INSIDE current directory
+	pdir = opendir("./files/"); //files folder INSIDE current directory
 
 	if (pdir == NULL)
 	{
@@ -37,9 +38,21 @@ int main()
 		exit(1);
 	}
 
-	int index = 0;
 	cout << "LISTING DIRECTORY CONTENTS\n";
-	while (pent = readdir(pdir)) //while something left to list
+
+	//for (int i = 0; i < NUM_FILES +2; i++) //MAX 4 FILES
+	//{
+	//	pent = readdir(pdir);
+	//	if (pent == NULL)
+	//	{
+	//		cout << "pent not initialised correctly";
+	//		exit(1);
+	//	}
+	//
+	//	file_names.push_back(string(pent->d_name));
+	//}
+
+	while (pent = readdir(pdir)) //while something left to list ANY NUMBER OF FILES
 	{
 		if (pent == NULL)
 		{
@@ -47,21 +60,26 @@ int main()
 			exit(1);
 		}
 
-		file_names.push_back(string(pent->d_name));
+		if (string(pent->d_name) == "." || string(pent->d_name) == "..") //do not include root and parent directory
+		{
+			//do nothing
+		}
+		else
+		{
+			file_names.push_back(string(pent->d_name));
+		}
+
 	}
 
 	for (int i = 0; i < NUM_FILES; i++)
 	{
-		cout << file_names[i + 2] << endl;
+		cout << file_names[i] << endl;
 		//cout << file_names_strings[i] << endl;
 	}
 
 	closedir(pdir);
 
-	string directory;
-	cout << "**Plagiarism Detector**";
-	cout << "Input directory to be scanned: (HINT: Try ./files/)" << endl;
-	cin >> directory;
+
 
 	/***************************************************************************************
 	*    Usage: based on
@@ -72,9 +90,9 @@ int main()
 
 	for (int i = 0; i < NUM_FILES; i++)
 	{
-		string line;
+		string string_in; //reads only a SINGLE string in at a time
 		stringstream file_path;
-		file_path << directory << file_names[i + 2];
+		file_path << directory << file_names[i]; //ignore . AND .. in file listing
 
 		ifstream inFile;		//reading in
 		inFile.open(file_path.str()); //pass in file_path as string
@@ -82,15 +100,15 @@ int main()
 		cout << "\n\n" << file_path.str() << " \n";
 		while (!inFile.eof()) {
 
-			inFile >> line;
+			inFile >> string_in;
 
 			//check if contains selective/iterative
-			if (line == "int")
+			if (string_in == "int")
 			{
 				array_of_indexes[i].count_iterative++;
 			}
 
-			cout << line;
+			cout << string_in;
 
 		}
 
