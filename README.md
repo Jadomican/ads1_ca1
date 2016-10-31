@@ -1,7 +1,7 @@
 #ADS1 CA1
 ##Elapsed CA1 (JASON DOMICAN & ROBERT FITZGERALD)
 
-![FOGGY](http://vignette2.wikia.nocookie.net/looneytunes/images/7/79/Foghorn_Leghorn.jpg/revision/latest?cb=20130223190707)
+![KARL](https://cdn.meme.am/instances/400x/15141522.jpg)
 
 
 PROJECT IS TO CREATE A PLAGIARISM DETECTION PROGRAM
@@ -82,3 +82,6 @@ JUMP STATEMENTS:
 * GOTO
 
 REF https://msdn.microsoft.com/en-ie/library/7ftwh93a.aspx
+
+![FOGGY](http://vignette2.wikia.nocookie.net/looneytunes/images/7/79/Foghorn_Leghorn.jpg/revision/latest?cb=20130223190707)
+
