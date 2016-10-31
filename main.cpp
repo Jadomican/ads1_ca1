@@ -82,7 +82,6 @@ int main()
 	//	}
 	//}
 
-	//int while_index = 0;
 	while (pent = readdir(pdir)) //while something left to list ANY NUMBER OF FILES
 	{
 
@@ -106,7 +105,6 @@ int main()
 			{
 				//file_names.push_back(string(pent->d_name));
 				array_of_indexes[count].file_name = string(pent->d_name);
-				//while_index++;
 				count++;
 			}
 		}
