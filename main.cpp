@@ -19,19 +19,18 @@ int main()
 {
 	const int NUM_FILES = 4;	//number of files to be processed
 	SimilarityIndex array_of_indexes[NUM_FILES]; //SHOULD WE INCLUDE A STRING (file_name) VARIABLE INSIDE THE STRUCT?
-
+	vector<string> file_names = vector<string>();
 	string directory;
+
 	cout << "**Plagiarism Detector**";
-	cout << "Input directory to be scanned: (HINT: Try ./files/)" << endl;
+	cout << "\nInput directory to be scanned: (HINT: Try ./files/ or files/)" << endl;
 	cin >> directory;
 
-	while (directory.back() != '/')
+	while (directory.back() != '/') //last character of string
 	{
 		cout << "Please include a '/' at the end of your directory\n";
 		cin >> directory;
 	}
-
-	vector<string> file_names = vector<string>();
 
 	DIR *pdir = NULL; // struct in dirent.h (Line 256)
 	struct dirent *pent = NULL;
@@ -138,3 +137,4 @@ int main()
 
 
 //http://www.cplusplus.com/reference/string/string/back/
+//https://www.daniweb.com/programming/software-development/threads/369727/open-txt-files-one-by-one-from-directory
