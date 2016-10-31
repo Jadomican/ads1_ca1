@@ -19,23 +19,21 @@ int main()
 {
 	const int NUM_FILES = 4;	//number of files to be processed
 	SimilarityIndex array_of_indexes[NUM_FILES]; //SHOULD WE INCLUDE A STRING (file_name) VARIABLE INSIDE THE STRUCT?
-	vector<string> file_names = vector<string>();
+	vector<string> file_names = vector<string>(); //NOT NECCESSARILY NEEDED
 	string directory;
 
 	cout << "**Plagiarism Detector**";
 	cout << "\nInput directory to be scanned: (HINT: Try ./files/ or files/)" << endl;
 	cin >> directory;
 
-	while (directory.back() != '/') //last character of string
+
+	if (directory.back() != '/') //last character of string
 	{
-		cout << "Please include a '/' at the end of your directory\n";
-		cin >> directory;
+		directory += '/';
 	}
 
 	DIR *pdir = NULL; // struct in dirent.h (Line 256)
 	struct dirent *pent = NULL;
-
-	//cout << directory.back();
 
 	/***************************************************************************************
 	*    Usage: modified
@@ -44,7 +42,7 @@ int main()
 	*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
 	***************************************************************************************/
 
-	pdir = opendir(directory.c_str()); //files folder INSIDE current directory
+	pdir = opendir(directory.c_str()); //opens specified directory
 
 	if (pdir == NULL)
 	{
@@ -54,7 +52,9 @@ int main()
 	}
 
 	cout << "LISTING DIRECTORY CONTENTS\n";
-	//for (int i = 0; i < NUM_FILES +2; i++) //MAX 4 FILES
+
+	//FOR LOOP OR WHILE LOOP?????
+	//for (int i = 0; i < NUM_FILES + 2; i++) //IGNORE . AND .. (max 4 files)
 	//{
 	//	pent = readdir(pdir);
 	//	if (pent == NULL)
@@ -63,7 +63,15 @@ int main()
 	//		exit(1);
 	//	}
 	//
-	//	file_names.push_back(string(pent->d_name));
+	//	if (string(pent->d_name) == "." || string(pent->d_name) == "..") //do not include root and parent directory
+	//	{
+	//		//do nothing
+	//	}
+	//	else
+	//	{
+	//		file_names.push_back(string(pent->d_name));
+	//		array_of_indexes[i].file_name = string(pent->d_name);
+	//	}
 	//}
 
 	while (pent = readdir(pdir)) //while something left to list ANY NUMBER OF FILES
@@ -74,7 +82,7 @@ int main()
 			exit(1);
 		}
 
-		if (string(pent->d_name) == "." || string(pent->d_name) == "..") //do not include root and parent directory
+		if (string(pent->d_name) == "." || string(pent->d_name) == "..") //do not include current and parent directory
 		{
 			//do nothing
 		}
@@ -82,13 +90,12 @@ int main()
 		{
 			file_names.push_back(string(pent->d_name));
 		}
-
 	}
 
 	for (int i = 0; i < NUM_FILES; i++)
 	{
 		cout << file_names[i] << endl;
-		//cout << file_names_strings[i] << endl;
+		array_of_indexes[i].file_name = file_names[i]; //COPY FILE NAMES INTO struct
 	}
 
 	closedir(pdir); //close the directory when done reading
@@ -109,24 +116,28 @@ int main()
 		ifstream inFile;		//reading in
 		inFile.open(file_path.str()); //pass in file_path as string
 
-		cout << "\n\n" << file_path.str() << " \n";
 		while (!inFile.eof()) {
 
 			inFile >> string_in;
 
 			//check if contains selective/iterative
-			if (string_in == "int")
+			if (string_in == "for" || string_in == "while" || string_in == "do while")
 			{
 				array_of_indexes[i].count_iterative++;
 			}
 
-			cout << string_in;
+			if (string_in == "if" || string_in == "switch" || string_in == "case")
+			{
+				array_of_indexes[i].count_selective++;
+			}
 
 		}
 
 		inFile.close(); //remember to close file
 
-		cout << "\nFILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
+		cout << endl << array_of_indexes[i].file_name;
+		cout << "\n   FILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
+		cout << "   FILE CONTAINS: " << array_of_indexes[i].count_selective << " SELECTIVE STATEMENTS\n";
 
 	}
 
@@ -138,3 +149,4 @@ int main()
 
 //http://www.cplusplus.com/reference/string/string/back/
 //https://www.daniweb.com/programming/software-development/threads/369727/open-txt-files-one-by-one-from-directory
+//http://stackoverflow.com/questions/2340281/check-if-a-string-contains-a-string-in-c
