@@ -17,39 +17,46 @@ using namespace std;
 
 int main()
 {
-	const int NUM_FILES = 4;	//number of files to be processed
-	SimilarityIndex array_of_indexes[NUM_FILES]; //SHOULD WE INCLUDE A STRING (file_name) VARIABLE INSIDE THE STRUCT?
-	vector<string> file_names = vector<string>(); //NOT NECCESSARILY NEEDED
+	const int MAX_NUM_FILES = 4;						//number of files to be processed
+	SimilarityIndex array_of_indexes[MAX_NUM_FILES];	//SHOULD WE INCLUDE A STRING (file_name) VARIABLE INSIDE THE STRUCT?
+	vector<string> file_names = vector<string>();	//NOT NECCESSARILY NEEDED
 	string directory;
-
-	cout << "**Plagiarism Detector**";
-	cout << "\nInput directory to be scanned: (HINT: Try ./files/ or files/)" << endl;
-	cin >> directory;
-
-
-	if (directory.back() != '/') //last character of string
-	{
-		directory += '/';
-	}
-
-	DIR *pdir = NULL; // struct in dirent.h (Line 256)
+	DIR *pdir = NULL;								// struct in dirent.h (Line 256)
 	struct dirent *pent = NULL;
+	int count = 0;
 
-	/***************************************************************************************
-	*    Usage: modified
-	*    Title: Converting String to Cstring in c++
-	*    Date: 30/10/2016
-	*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
-	***************************************************************************************/
-
-	pdir = opendir(directory.c_str()); //opens specified directory
-
-	if (pdir == NULL)
+	do
 	{
-		cout << "\npdir not initialised correctly\n";
-		system("pause");
-		exit(1);
-	}
+		cout << "**Plagiarism Detector**";
+		cout << "\nInput directory to be scanned: (HINT: Try ./files/ or files/ ...... type x to exit)" << endl;
+		cin >> directory;
+
+		if (directory == "x")
+		{
+			exit(1);
+		}
+
+		if (directory.back() != '/') //last character of string
+		{
+			directory += '/';
+		}
+
+
+		/***************************************************************************************
+		*    Usage: modified
+		*    Title: Converting String to Cstring in c++
+		*    Date: 30/10/2016
+		*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
+		***************************************************************************************/
+
+		pdir = opendir(directory.c_str()); //opens specified directory
+
+		if (pdir == NULL)
+		{
+			cout << "\npdir not initialised correctly\n";
+			cout << "\nTRY AGAIN\n";
+		}
+	} while (pdir == NULL);
 
 	cout << "LISTING DIRECTORY CONTENTS\n";
 
@@ -88,11 +95,25 @@ int main()
 		}
 		else
 		{
-			file_names.push_back(string(pent->d_name));
+			if (count >= MAX_NUM_FILES)
+			{
+				cout << "Only first " << MAX_NUM_FILES << " files scanned\n";
+			}
+			else
+			{
+				file_names.push_back(string(pent->d_name));
+				count++;
+			}
 		}
 	}
+	//if (count < NUM_FILES)
+	//{
+	//	cout << "*** Number of files in the directory must match NUM_FILES constant ***";
+	//	system("pause");
+	//	exit(1);
+	//}
 
-	for (int i = 0; i < NUM_FILES; i++)
+	for (int i = 0; i < count; i++)
 	{
 		cout << file_names[i] << endl;
 		array_of_indexes[i].file_name = file_names[i]; //COPY FILE NAMES INTO struct
@@ -100,14 +121,14 @@ int main()
 
 	closedir(pdir); //close the directory when done reading
 
-	/***************************************************************************************
-	*    Usage: based on
-	*    Title: How do you make an array of structs in C?
-	*    Date:  27/10/2016
-	*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
-	***************************************************************************************/
+/***************************************************************************************
+*    Usage: based on
+*    Title: How do you make an array of structs in C?
+*    Date:  27/10/2016
+*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
+***************************************************************************************/
 
-	for (int i = 0; i < NUM_FILES; i++)
+	for (int i = 0; i < count; i++)
 	{
 		string string_in; //reads only a SINGLE string in at a time
 		stringstream file_path;
