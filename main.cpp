@@ -22,7 +22,7 @@ int main()
 		int count_selective = 0; // if, switch
 		int count_iterative = 0; // for, while
 		string file_name;
-		int number_of_lines = 0;
+		int number_of_lines = 0; //lines of CODE
 
 	};
 
@@ -37,7 +37,7 @@ int main()
 	do
 	{
 		cout << "**Plagiarism Detector (MAX " << kMaxNumFiles << " FILES)**";
-		cout << "\nInput directory to be scanned: (HINT: Try ./files/ or files/ ... x to exit)" << endl;
+		cout << "\nInput directory to be scanned: (HINT: Try ./files/ or files/ ... x to exit)\n\nDirectory: ";
 		cin >> directory;
 
 		if (directory == "x") // allow user to exit
@@ -52,12 +52,12 @@ int main()
 			directory += '/';
 		}
 
-/***************************************************************************************
-*    Usage: modified
-*    Title: Converting String to Cstring in c++
-*    Date: 30/10/2016
-*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
-***************************************************************************************/
+		/***************************************************************************************
+		*    Usage: modified
+		*    Title: Converting String to Cstring in c++
+		*    Date: 30/10/2016
+		*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
+		***************************************************************************************/
 
 		pdir = opendir(directory.c_str()); //opens specified directory
 
@@ -67,8 +67,6 @@ int main()
 			cout << "\nTRY AGAIN\n";
 		}
 	} while (pdir == NULL);
-
-	cout << "LISTING DIRECTORY CONTENTS\n";
 
 	//FOR LOOP OR WHILE LOOP?????
 	//for (int i = 0; i < NUM_FILES + 2; i++) //IGNORE . AND .. (max 4 files)
@@ -89,6 +87,7 @@ int main()
 	//		array_of_indexes[i].file_name = string(pent->d_name);
 	//	}
 	//}
+
 	int num_skipped = 0;
 	while (pent = readdir(pdir)) //while something left to list ANY NUMBER OF FILES
 	{
@@ -107,7 +106,6 @@ int main()
 		{
 			if (count_files >= kMaxNumFiles)
 			{
-				//cout << "SKIPPING " << pent->d_name <<", only first " << kMaxNumFiles << " files scanned\n";
 				num_skipped++;
 			}
 			else
@@ -118,7 +116,11 @@ int main()
 			}
 		}
 	}
-	cout << "\n* " << num_skipped << " files were skipped*\n";
+
+	if (num_skipped > 0)
+	{
+		cout << "\n*" << num_skipped << " files were skipped*\n";
+	}
 
 	closedir(pdir); //close the directory when done reading
 
@@ -182,10 +184,7 @@ int main()
 		cout << endl << array_of_indexes[i].file_name;
 		cout << "\n   FILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
 		cout << "   FILE CONTAINS: " << array_of_indexes[i].count_selective << " SELECTIVE STATEMENTS\n";
-
-		cout << "   Number of lines in text file: " << array_of_indexes[i].number_of_lines;
-
-
+		cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << endl;
 
 
 	}
