@@ -13,6 +13,9 @@ ADS1 Practical 1
 #include <sstream>
 #include <vector>
 #include "dirent.h"
+
+//#include <algorithm>
+
 using namespace std;
 
 int main()
@@ -23,6 +26,9 @@ int main()
 		int count_iterative = 0; // for, while
 		int number_of_lines = 0; //lines of CODE
 		int number_of_words = 0;
+
+		double index_metric; //= count_selective + count_iterative; //how you determine similarity
+
 		string file_name;
 	};
 
@@ -184,11 +190,19 @@ int main()
 		}
 		in_file.close(); //remember to close file
 
+
+		array_of_indexes[i].index_metric = 
+			(double(array_of_indexes[i].count_iterative) + double(array_of_indexes[i].count_selective)) 
+			* double(array_of_indexes[i].number_of_words) / double(array_of_indexes[i].number_of_words);
+
+
 		cout << endl << array_of_indexes[i].file_name;
 		cout << "\n   FILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
 		cout << "   FILE CONTAINS: " << array_of_indexes[i].count_selective << " SELECTIVE STATEMENTS\n";
 		cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << endl;
 		cout << "   Word count: " << array_of_indexes[i].number_of_words << endl;
+		cout << "   INDEX METRIC: " << array_of_indexes[i].index_metric << endl;
+
 
 	}
 
@@ -196,10 +210,6 @@ int main()
 	system("pause");
 	return 0;
 }
-
-
-//USE VECTOR, ARRAY OF STRINGS OR STRING VARIABLE IN similarity_index.h?
-//HOW MANY COMPARISONS? WHILE? DO? FOR? FOREACH? RETURN? WHICH WAY? find() method?
 
 //http://www.cplusplus.com/reference/string/string/back/
 //https://www.daniweb.com/programming/software-development/threads/369727/open-txt-files-one-by-one-from-directory
