@@ -110,76 +110,76 @@ int main() //all parts of program coded by Jason and Robert
 		}
 	}
 
-	if (num_skipped > 0)
-	{
-		cout << "\n*" << num_skipped << " .cpp files were skipped*\n";
-	}
-
-	closedir(pdir); //close the directory when done reading
-
-	/***************************************************************************************
-	*    Usage: based on
-	*    Title: How do you make an array of structs in C?
-	*    Date:  27/10/2016
-	*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
-	***************************************************************************************/
-
-	for (int i = 0; i < count_files; i++)
-	{
-		string string_in; //reads only a SINGLE string in at a time
-		stringstream file_path;
-		file_path << directory << array_of_indexes[i].file_name; //ignore . AND .. in file listing
-
-		string line;
-		ifstream lines_in_file;		//READ NUMBER OF LINES
-		ifstream in_file;			//READ NUMBER OF WORDS/SEL/ITER/
-
-		lines_in_file.open(file_path.str());
-		while (getline(lines_in_file, line))
-		{
-			array_of_indexes[i].number_of_lines++; //number of lines of code
-			lines_in_file >> string_in;
-		}
-		lines_in_file.close();
-
-		in_file.open(file_path.str());	//pass in file_path as string
-		while (!in_file.eof()) {		//Read each string
-
-			in_file >> string_in;
-			array_of_indexes[i].number_of_words++;
-			//check if contains selective/iterative
-			if (string_in == "for" || string_in == "while" || string_in == "do while")
-			{
-				array_of_indexes[i].count_iterative++;
-			}
-
-			if (string_in == "if" || string_in == "switch" || string_in == "case")
-			{
-				array_of_indexes[i].count_selective++;
-			}
-
-		}
-		in_file.close(); //remember to close file
-
-		//calculate similarity index metric
-		array_of_indexes[i].index_metric =
-			((array_of_indexes[i].count_iterative) + (array_of_indexes[i].count_selective))
-			* double(array_of_indexes[i].number_of_words) / (array_of_indexes[i].number_of_lines);
-	}
-
-	/***************************************************************************************
-	*    Usage: modified
-	*    Title: Sorting an array using selection sort
-	*    Date:  1/11/2016
-	*    Availability: http://www.learncpp.com/cpp-tutorial/64-sorting-an-array-using-selection-sort/
-	***************************************************************************************/
-
-	if (count_files < 1)
+	if (count_files < 1) //if no cpp files found
 	{
 		cout << "\n*No .cpp files found*\n";
 	}
-	else
+	else //else continue
 	{
+		if (num_skipped > 0)
+		{
+			cout << "\n*" << num_skipped << " .cpp files were skipped*\n";
+		}
+
+		closedir(pdir); //close the directory when done reading
+
+		/***************************************************************************************
+		*    Usage: based on
+		*    Title: How do you make an array of structs in C?
+		*    Date:  27/10/2016
+		*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
+		***************************************************************************************/
+
+		for (int i = 0; i < count_files; i++)
+		{
+			string string_in; //reads only a SINGLE string in at a time
+			stringstream file_path;
+			file_path << directory << array_of_indexes[i].file_name; //ignore . AND .. in file listing
+
+			string line;
+			ifstream lines_in_file;		//READ NUMBER OF LINES
+			ifstream in_file;			//READ NUMBER OF WORDS/SEL/ITER/
+
+			lines_in_file.open(file_path.str());
+			while (getline(lines_in_file, line))
+			{
+				array_of_indexes[i].number_of_lines++; //number of lines of code
+				lines_in_file >> string_in;
+			}
+			lines_in_file.close();
+
+			in_file.open(file_path.str());	//pass in file_path as string
+			while (!in_file.eof()) {		//Read each string
+
+				in_file >> string_in;
+				array_of_indexes[i].number_of_words++;
+				//check if contains selective/iterative
+				if (string_in == "for" || string_in == "while" || string_in == "do while")
+				{
+					array_of_indexes[i].count_iterative++;
+				}
+
+				if (string_in == "if" || string_in == "switch" || string_in == "case")
+				{
+					array_of_indexes[i].count_selective++;
+				}
+
+			}
+			in_file.close(); //remember to close file
+
+			//calculate similarity index metric
+			array_of_indexes[i].index_metric =
+				((array_of_indexes[i].count_iterative) + (array_of_indexes[i].count_selective))
+				* double(array_of_indexes[i].number_of_words) / (array_of_indexes[i].number_of_lines);
+		}
+
+		/***************************************************************************************
+		*    Usage: modified
+		*    Title: Sorting an array using selection sort
+		*    Date:  1/11/2016
+		*    Availability: http://www.learncpp.com/cpp-tutorial/64-sorting-an-array-using-selection-sort/
+		***************************************************************************************/
+
 		//Sort by index metric
 		cout << "\nSorting by index metrics:\n";
 		for (int start_index = 0; start_index < count_files; start_index++)
@@ -216,19 +216,25 @@ int main() //all parts of program coded by Jason and Robert
 			cout << setprecision(2) << fixed << "   Index Metric: " << array_of_indexes[i].index_metric << "\n";
 		}
 
-		for (int i = 0; i < count_files; i++) //determine similarity
+		if (count_files > 1)
 		{
-			for (int j = i + 1; j < count_files + 1; j++)
+			for (int i = 0; i < count_files; i++) //determine similarity
 			{
-				if (array_of_indexes[i].index_metric < (array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * plagiarism_percent)
-					&& (array_of_indexes[i].index_metric > (array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * plagiarism_percent)))
+				for (int j = i + 1; j < count_files + 1; j++)
 				{
-					cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
-						<< " may be plagiarised (within " << plagiarism_percent * 100 << " percent)" << "\n";
+					if (array_of_indexes[i].index_metric < (array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * plagiarism_percent)
+						&& (array_of_indexes[i].index_metric > (array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * plagiarism_percent)))
+					{
+						cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
+							<< " may be plagiarised (within " << plagiarism_percent * 100 << " percent)" << "\n";
+					}
 				}
 			}
 		}
-
+		else
+		{
+			cout << "\n*Only one file found, similarity cannot be determined*";
+		}
 	}
 
 	cout << endl;
