@@ -14,8 +14,8 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
-#include <algorithm> //use to sort?
-#include "dirent.h"
+#include <algorithm>
+#include "dirent.h" //used to access directories
 using namespace std;
 
 int main() //all parts of program coded by Jason and Robert
@@ -175,40 +175,50 @@ int main() //all parts of program coded by Jason and Robert
 	*    Availability: http://www.learncpp.com/cpp-tutorial/64-sorting-an-array-using-selection-sort/
 	***************************************************************************************/
 
-	//Sort by index metric
-	cout << "\nSorting by index metrics:\n";
-	for (int start_index = 0; start_index < count_files; start_index++)
+	if (count_files < 1)
 	{
-		// smallest_index is the index of the smallest element encountered so far.
-		int smallest_index = start_index;
-		// Look for smallest element remaining in the array (starting at start_index+1)
-		for (int current_index = start_index + 1; current_index < count_files; current_index++)
-		{
-			// If the current element is smaller than the previously found smallest
-			if (array_of_indexes[current_index].index_metric < array_of_indexes[smallest_index].index_metric)
-				// This is the new smallest number for this iteration
-				smallest_index = current_index;
-		}
-		// Swap our start element with our smallest element
-		swap(array_of_indexes[start_index], array_of_indexes[smallest_index]);
+		cout << "\n*No .cpp files found*\n";
 	}
-
-	/***************************************************************************************
-	*    Usage: modified
-	*    Title: Show two digits after decimal point in c++
-	*    Date: 04/11/2016
-	*    Availability: http://stackoverflow.com/questions/16280069/show-two-digits-after-decimal-point-in-c
-	***************************************************************************************/
-
-	for (int i = 0; i < count_files; i++)
+	else
 	{
-		cout << "\n" << array_of_indexes[i].file_name;
-		cout << "\n   File contains: " << array_of_indexes[i].count_iterative << " Iterative statements\n";
-		cout << "   File contains: " << array_of_indexes[i].count_selective << " Selective statements\n";
-		cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << "\n";
-		cout << "   Word count: " << array_of_indexes[i].number_of_words << "\n";
-		//format print statement to 2 decimal places for readability
-		cout << setprecision(2) << fixed << "   Index Metric: " << array_of_indexes[i].index_metric << "\n";
+		//Sort by index metric
+		cout << "\nSorting by index metrics:\n";
+		for (int start_index = 0; start_index < count_files; start_index++)
+		{
+			// smallest_index is the index of the smallest element encountered so far.
+			int smallest_index = start_index;
+			// Look for smallest element remaining in the array (starting at start_index+1)
+			for (int current_index = start_index + 1; current_index < count_files; current_index++)
+			{
+				// If the current element is smaller than the previously found smallest
+				if (array_of_indexes[current_index].index_metric < array_of_indexes[smallest_index].index_metric)
+					// This is the new smallest number for this iteration
+					smallest_index = current_index;
+			}
+			// Swap our start element with our smallest element
+			swap(array_of_indexes[start_index], array_of_indexes[smallest_index]);
+		}
+
+		/***************************************************************************************
+		*    Usage: modified
+		*    Title: Show two digits after decimal point in c++
+		*    Date: 04/11/2016
+		*    Availability: http://stackoverflow.com/questions/16280069/show-two-digits-after-decimal-point-in-c
+		***************************************************************************************/
+
+		for (int i = 0; i < count_files; i++)
+		{
+			cout << "\n" << array_of_indexes[i].file_name;
+			cout << "\n   File contains: " << array_of_indexes[i].count_iterative << " Iterative statements\n";
+			cout << "   File contains: " << array_of_indexes[i].count_selective << " Selective statements\n";
+			cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << "\n";
+			cout << "   Word count: " << array_of_indexes[i].number_of_words << "\n";
+			//format print statement to 2 decimal places for readability
+			cout << setprecision(2) << fixed << "   Index Metric: " << array_of_indexes[i].index_metric << "\n";
+		}
+
+		//do something with sorted values here?
+
 	}
 
 	cout << endl;
