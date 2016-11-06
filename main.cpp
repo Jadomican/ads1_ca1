@@ -90,7 +90,11 @@ int main() //all parts of program coded by Jason and Robert
 	while (pent = readdir(pdir)) //while something left to list - read next directory entry
 	{
 
-		if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) == "cpp")
+		if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) != "cpp")
+		{
+
+		}
+		else
 		{
 
 			if (pent == NULL)
@@ -109,22 +113,17 @@ int main() //all parts of program coded by Jason and Robert
 				}
 				else
 				{
-					//file_names.push_back(string(pent->d_name));
 					array_of_indexes[count_files].file_name = string(pent->d_name);
 					count_files++;
 				}
 			}
-		}
-		else
-		{
-			cout << string(pent->d_name) << " IS NOT A CPP FILE";
 		}
 
 	}
 
 	if (num_skipped > 0)
 	{
-		cout << "\n*" << num_skipped << " files were skipped*\n";
+		cout << "\n*" << num_skipped << " cpp files were skipped*\n";
 	}
 
 	closedir(pdir); //close the directory when done reading
