@@ -42,7 +42,7 @@ int main() //all parts of program coded by Jason and Robert
 	*    Availability: https://www.daniweb.com/programming/software-development/threads/369727/open-txt-files-one-by-one-from-directory
 	***************************************************************************************/
 
-	const int kMaxNumFiles = 4;						//MAX number of files to be processed
+	const int kMaxNumFiles = 4;	 //MAX number of files to be processed
 	SimilarityIndex array_of_indexes[kMaxNumFiles];
 	string directory;
 	DIR *pdir = NULL;			// pointer to a directory
@@ -84,29 +84,42 @@ int main() //all parts of program coded by Jason and Robert
 	} while (pdir == NULL);
 
 	int num_skipped = 0; //number of files in directory skipped based on max files constant
+
+	//http://stackoverflow.com/questions/51949/how-to-get-file-extension-from-string-in-c
+
 	while (pent = readdir(pdir)) //while something left to list - read next directory entry
 	{
 
-		if (pent == NULL)
+		if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) == "cpp")
 		{
-			cout << "pent not initialised correctly";
-			exit(1);
-		}
 
-		if (string(pent->d_name) == "." || string(pent->d_name) == ".."){} //do not include current and parent directory
-		else
-		{
-			if (count_files >= kMaxNumFiles)
+			if (pent == NULL)
 			{
-				num_skipped++;
+				cout << "pent not initialised correctly";
+				exit(1);
 			}
+
+			if (string(pent->d_name) == "." || string(pent->d_name) == "..") {} //do not include current and parent directory
+
 			else
 			{
-				//file_names.push_back(string(pent->d_name));
-				array_of_indexes[count_files].file_name = string(pent->d_name);
-				count_files++;
+				if (count_files >= kMaxNumFiles)
+				{
+					num_skipped++;
+				}
+				else
+				{
+					//file_names.push_back(string(pent->d_name));
+					array_of_indexes[count_files].file_name = string(pent->d_name);
+					count_files++;
+				}
 			}
 		}
+		else
+		{
+			cout << string(pent->d_name) << " IS NOT A CPP FILE";
+		}
+
 	}
 
 	if (num_skipped > 0)
@@ -171,7 +184,7 @@ int main() //all parts of program coded by Jason and Robert
 	}
 
 	cout << "\nSORTING BY INDEX METRICS\n";
-a	/***************************************************************************************
+	/***************************************************************************************
 	*    Usage: modified
 	*    Title: Sorting an array using selection sort
 	*    Date:  1/11/2016
@@ -179,12 +192,12 @@ a	/*****************************************************************************
 	***************************************************************************************/
 
 	// Step through each element of the array
-	for (int startIndex = 0; startIndex < kMaxNumFiles; ++startIndex)
+	for (int startIndex = 0; startIndex < count_files; ++startIndex)
 	{
 		// smallestIndex is the index of the smallest element we've encountered so far.
 		int smallestIndex = startIndex;
 		// Look for smallest element remaining in the array (starting at startIndex+1)
-		for (int currentIndex = startIndex + 1; currentIndex < kMaxNumFiles; ++currentIndex)
+		for (int currentIndex = startIndex + 1; currentIndex < count_files; ++currentIndex)
 		{
 			// If the current element is smaller than our previously found smallest
 			if (array_of_indexes[currentIndex].index_metric < array_of_indexes[smallestIndex].index_metric)
