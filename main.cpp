@@ -189,20 +189,20 @@ int main() //all parts of program coded by Jason and Robert
 	***************************************************************************************/
 
 	// Step through each element of the array
-	for (int startIndex = 0; startIndex < count_files; ++startIndex)
+	for (int start_index = 0; start_index < count_files; ++start_index)
 	{
 		// smallestIndex is the index of the smallest element we've encountered so far.
-		int smallestIndex = startIndex;
+		int smallest_index = start_index;
 		// Look for smallest element remaining in the array (starting at startIndex+1)
-		for (int currentIndex = startIndex + 1; currentIndex < count_files; ++currentIndex)
+		for (int current_index = start_index + 1; current_index < count_files; ++current_index)
 		{
 			// If the current element is smaller than our previously found smallest
-			if (array_of_indexes[currentIndex].index_metric < array_of_indexes[smallestIndex].index_metric)
+			if (array_of_indexes[current_index].index_metric < array_of_indexes[smallest_index].index_metric)
 				// This is the new smallest number for this iteration
-				smallestIndex = currentIndex;
+				smallest_index = current_index;
 		}
 		// Swap our start element with our smallest element
-		swap(array_of_indexes[startIndex], array_of_indexes[smallestIndex]);
+		swap(array_of_indexes[start_index], array_of_indexes[smallest_index]);
 	}
 
 	/***************************************************************************************
