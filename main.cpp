@@ -1,8 +1,8 @@
 /*
-Jason Domican		X00119321
-Robert Fitzgerald	X00123156
-
-ADS1 Practical 1
+*	Jason Domican		X00119321
+*	Robert Fitzgerald	X00123156
+*	
+*	ADS1 Practical 1
 */
 
 #include <cstdlib>
@@ -12,9 +12,10 @@ ADS1 Practical 1
 #include <Windows.h>
 #include <sstream>
 #include <vector>
-#include "dirent.h"
 #include <iomanip>
 //#include <algorithm> //can potentially use to SORT?
+#include "dirent.h"
+
 using namespace std;
 
 int main() //all parts of program coded by Jason and Robert
@@ -34,6 +35,11 @@ int main() //all parts of program coded by Jason and Robert
 	*    Title: Accessing directories in C/C++ Part I
 	*    Date: 29/10/2016
 	*    Availability: http://www.dreamincode.net/forums/topic/59943-accessing-directories-in-cc-part-i/
+	*
+	*    Usage: modified
+	*    Title: Open txt files one by one from directory
+	*    Date: 29/10/2016
+	*    Availability: https://www.daniweb.com/programming/software-development/threads/369727/open-txt-files-one-by-one-from-directory
 	***************************************************************************************/
 
 	const int kMaxNumFiles = 4;						//MAX number of files to be processed
@@ -77,27 +83,7 @@ int main() //all parts of program coded by Jason and Robert
 		}
 	} while (pdir == NULL);
 
-	//FOR LOOP OR WHILE LOOP?????
-	//for (int i = 0; i < NUM_FILES + 2; i++) //IGNORE . AND .. (max 4 files)
-	//{
-	//	pent = readdir(pdir);
-	//	if (pent == NULL)
-	//	{
-	//		cout << "pent not initialised correctly";
-	//		exit(1);
-	//	}
-	//
-	//	if (string(pent->d_name) == "." || string(pent->d_name) == "..") //do not include root and parent directory
-	//	{
-	//		//do nothing
-	//	}
-	//	else
-	//	{
-	//		array_of_indexes[i].file_name = string(pent->d_name);
-	//	}
-	//}
-
-	int num_skipped = 0;
+	int num_skipped = 0; //number of files in directory skipped based on max files constant
 	while (pent = readdir(pdir)) //while something left to list - read next directory entry
 	{
 
@@ -107,10 +93,7 @@ int main() //all parts of program coded by Jason and Robert
 			exit(1);
 		}
 
-		if (string(pent->d_name) == "." || string(pent->d_name) == "..") //do not include current and parent directory
-		{
-			//do nothing
-		}
+		if (string(pent->d_name) == "." || string(pent->d_name) == ".."){} //do not include current and parent directory
 		else
 		{
 			if (count_files >= kMaxNumFiles)
@@ -191,6 +174,7 @@ int main() //all parts of program coded by Jason and Robert
 		*    Date: 04/11/2016
 		*    Availability: http://stackoverflow.com/questions/16280069/show-two-digits-after-decimal-point-in-c
 		***************************************************************************************/
+
 		cout << endl << array_of_indexes[i].file_name;
 		cout << "\n   FILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
 		cout << "   FILE CONTAINS: " << array_of_indexes[i].count_selective << " SELECTIVE STATEMENTS\n";
@@ -199,7 +183,51 @@ int main() //all parts of program coded by Jason and Robert
 
 		//format print statement to 2 decimal places for readability
 		cout << setprecision(2) << fixed << "   INDEX METRIC: " << array_of_indexes[i].index_metric << endl;
+	}
 
+	cout << "\nSORTING BY INDEX METRICS\n\n";
+
+	double array_sim_indexes[kMaxNumFiles];
+	for (int i = 0; i < count_files; i++)
+	{
+		array_sim_indexes[i] = array_of_indexes[i].index_metric;
+	}
+
+	/***************************************************************************************
+	*    Usage: modified
+	*    Title: Sorting an array using selection sort
+	*    Date:  1/11/2016
+	*    Availability: http://www.learncpp.com/cpp-tutorial/64-sorting-an-array-using-selection-sort/
+	***************************************************************************************/
+
+	// Step through each element of the array
+	for (int startIndex = 0; startIndex < kMaxNumFiles; ++startIndex)
+	{
+		// smallestIndex is the index of the smallest element we've encountered so far.
+		int smallestIndex = startIndex;
+		// Look for smallest element remaining in the array (starting at startIndex+1)
+		for (int currentIndex = startIndex + 1; currentIndex < kMaxNumFiles; ++currentIndex)
+		{
+			// If the current element is smaller than our previously found smallest
+			if (array_sim_indexes[currentIndex] < array_sim_indexes[smallestIndex])
+				// This is the new smallest number for this iteration
+				smallestIndex = currentIndex;
+		}
+		// Swap our start element with our smallest element
+		swap(array_sim_indexes[startIndex], array_sim_indexes[smallestIndex]);
+	}
+
+	//DOESN'T WORK CORRECTLY ATM
+	for (int i = 0; i < count_files; i++)
+	{
+		cout << endl;
+		for (int j = 0; j < count_files; j++)
+		{
+			if (array_of_indexes[j].index_metric == array_sim_indexes[i])
+			{
+				cout << array_of_indexes[i].file_name << " has an index matrix of " << array_of_indexes[i].index_metric << endl;
+			}
+		}
 	}
 
 	cout << endl;
@@ -208,5 +236,4 @@ int main() //all parts of program coded by Jason and Robert
 }
 
 //http://www.cplusplus.com/reference/string/string/back/
-//https://www.daniweb.com/programming/software-development/threads/369727/open-txt-files-one-by-one-from-directory
 //http://stackoverflow.com/questions/2340281/check-if-a-string-contains-a-string-in-c
