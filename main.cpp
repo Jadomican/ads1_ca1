@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <Windows.h>
+//#include <Windows.h>
 #include <sstream>
 #include <vector>
 #include <iomanip>
@@ -48,6 +48,7 @@ int main() //all parts of program coded by Jason and Robert
 	DIR *pdir = NULL; // pointer to a directory
 	struct dirent *pent = NULL; //dirent pointer
 	int count_files = 0;
+	double plagiarism_percent = 0.30; //percentage of similarity checked
 
 	cout << "**Plagiarism Detector (Max " << kMaxNumFiles << " .cpp files)**";
 	cout << "\nInput directory to be scanned or press x to exit)\n\n";
@@ -97,16 +98,14 @@ int main() //all parts of program coded by Jason and Robert
 	{
 		if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) == "cpp") //if cpp file type
 		{
+			if (count_files >= kMaxNumFiles)
 			{
-				if (count_files >= kMaxNumFiles)
-				{
-					num_skipped++;
-				}
-				else
-				{
-					array_of_indexes[count_files].file_name = string(pent->d_name);
-					count_files++;
-				}
+				num_skipped++;
+			}
+			else
+			{
+				array_of_indexes[count_files].file_name = string(pent->d_name);
+				count_files++;
 			}
 		}
 	}
@@ -217,7 +216,18 @@ int main() //all parts of program coded by Jason and Robert
 			cout << setprecision(2) << fixed << "   Index Metric: " << array_of_indexes[i].index_metric << "\n";
 		}
 
-		//do something with sorted values here?
+		for (int i = 0; i < count_files; i++) //determine similarity
+		{
+			for (int j = i + 1; j < count_files + 1; j++)
+			{
+				if (array_of_indexes[i].index_metric < (array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * plagiarism_percent)
+					&& (array_of_indexes[i].index_metric > (array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * plagiarism_percent)))
+				{
+					cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
+						<< " may be plagiarised (within " << plagiarism_percent * 100 << " percent)" << "\n";
+				}
+			}
+		}
 
 	}
 
@@ -226,4 +236,3 @@ int main() //all parts of program coded by Jason and Robert
 	return 0;
 }
 //http://www.cplusplus.com/reference/string/string/back/
-//http://stackoverflow.com/questions/2340281/check-if-a-string-contains-a-string-in-c
