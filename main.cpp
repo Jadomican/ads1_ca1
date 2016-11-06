@@ -90,31 +90,29 @@ int main() //all parts of program coded by Jason and Robert
 	while (pent = readdir(pdir)) //while something left to list - read next directory entry
 	{
 
-		if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) != "cpp")
+		if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) == "cpp") //if cpp file type
 		{
-
-		}
-		else
-		{
-
-			if (pent == NULL)
 			{
-				cout << "pent not initialised correctly";
-				exit(1);
-			}
 
-			if (string(pent->d_name) == "." || string(pent->d_name) == "..") {} //do not include current and parent directory
-
-			else
-			{
-				if (count_files >= kMaxNumFiles)
+				if (pent == NULL)
 				{
-					num_skipped++;
+					cout << "pent not initialised correctly";
+					exit(1);
 				}
+
+				if (string(pent->d_name) == "." || string(pent->d_name) == "..") {} //do not include current and parent directory
+
 				else
 				{
-					array_of_indexes[count_files].file_name = string(pent->d_name);
-					count_files++;
+					if (count_files >= kMaxNumFiles)
+					{
+						num_skipped++;
+					}
+					else
+					{
+						array_of_indexes[count_files].file_name = string(pent->d_name);
+						count_files++;
+					}
 				}
 			}
 		}
