@@ -13,7 +13,7 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
-//#include <algorithm> //can potentially use to SORT?
+#include <algorithm> //use to sort?
 #include "dirent.h"
 
 using namespace std;
@@ -137,23 +137,19 @@ int main() //all parts of program coded by Jason and Robert
 	{
 		string string_in; //reads only a SINGLE string in at a time
 		stringstream file_path;
-		//file_path << directory << file_names[i]; //ignore . AND .. in file listing
 		file_path << directory << array_of_indexes[i].file_name; //ignore . AND .. in file listing
 
 		string line;
-		ifstream wc_in_file;		//READ NUMBER OF WORDS
-		ifstream in_file;			//READ NUMBER OF SEL/ITER/NUMBER OF LINES
+		ifstream lines_in_file;		//READ NUMBER OF LINES
+		ifstream in_file;			//READ NUMBER OF WORDS/SEL/ITER/
 
-		wc_in_file.open(file_path.str());
-		while (getline(wc_in_file, line))
+		lines_in_file.open(file_path.str());
+		while (getline(lines_in_file, line))
 		{
 			array_of_indexes[i].number_of_lines++; //NUMBER OF LINES WITH CODE IN THEM
-
-			wc_in_file >> string_in;
-
+			lines_in_file >> string_in;
 		}
-
-		wc_in_file.close();
+		lines_in_file.close();
 
 		in_file.open(file_path.str());	//pass in file_path as string
 		while (!in_file.eof()) {			//READ EACH STRING
