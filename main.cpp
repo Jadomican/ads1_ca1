@@ -1,8 +1,9 @@
 /*
 *	Jason Domican		X00119321
 *	Robert Fitzgerald	X00123156
-*	
-*	ADS1 Practical 1
+*
+*	ADS1 CA1
+*	Utilises dirent.h by Toni Rönkkö https://github.com/tronkko
 */
 
 #include <cstdlib>
@@ -15,7 +16,6 @@
 #include <iomanip>
 #include <algorithm> //use to sort?
 #include "dirent.h"
-
 using namespace std;
 
 int main() //all parts of program coded by Jason and Robert
@@ -27,7 +27,7 @@ int main() //all parts of program coded by Jason and Robert
 		int number_of_lines = 0; //lines of CODE
 		int number_of_words = 0; //word count
 		string file_name;
-		double index_metric; //how you determine similarity
+		double index_metric; //determines similarity
 	};
 
 	/***************************************************************************************
@@ -42,27 +42,29 @@ int main() //all parts of program coded by Jason and Robert
 	*    Availability: https://www.daniweb.com/programming/software-development/threads/369727/open-txt-files-one-by-one-from-directory
 	***************************************************************************************/
 
-	const int kMaxNumFiles = 4;	 //MAX number of files to be processed
+	const int kMaxNumFiles = 4; //MAX number of files to be processed
 	SimilarityIndex array_of_indexes[kMaxNumFiles];
 	string directory;
-	DIR *pdir = NULL;			// pointer to a directory
+	DIR *pdir = NULL; // pointer to a directory
 	struct dirent *pent = NULL; //dirent pointer
 	int count_files = 0;
 
+	cout << "**Plagiarism Detector (Max " << kMaxNumFiles << " .cpp files)**";
+	cout << "\nInput directory to be scanned or press x to exit)\n\n";
+
 	do
 	{
-		cout << "**Plagiarism Detector (MAX " << kMaxNumFiles << " FILES)**";
-		cout << "\nInput directory to be scanned: (HINT: Try ./files/ or files/ ... x to exit)\n\nDirectory: ";
+		cout << "Directory: ";
 		cin >> directory;
 
-		if (directory == "x") // allow user to exit
+		if (directory == "x" || directory == "X") //allow user to exit
 		{
 			cout << "\nExiting...\n";
 			system("pause");
 			exit(1);
 		}
 
-		if (directory.back() != '/') //last character of string
+		if (directory.back() != '/') //ensure last character is a '/' ('\' works too)
 		{
 			directory += '/';
 		}
@@ -78,50 +80,40 @@ int main() //all parts of program coded by Jason and Robert
 
 		if (pdir == NULL)
 		{
-			cout << "\npdir not initialised correctly\n";
-			cout << "\nTRY AGAIN\n";
+			cout << "\nDirectory not found, try again\n\n";
 		}
 	} while (pdir == NULL);
 
 	int num_skipped = 0; //number of files in directory skipped based on max files constant
 
-	//http://stackoverflow.com/questions/51949/how-to-get-file-extension-from-string-in-c
+	/***************************************************************************************
+	*    Usage: modified
+	*    Title: How to get file extension from string in C++
+	*    Date: 03/11/2016
+	*    Availability: http://stackoverflow.com/questions/51949/how-to-get-file-extension-from-string-in-c
+	***************************************************************************************/
 
 	while (pent = readdir(pdir)) //while something left to list - read next directory entry
 	{
-
 		if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) == "cpp") //if cpp file type
 		{
 			{
-
-				if (pent == NULL)
+				if (count_files >= kMaxNumFiles)
 				{
-					cout << "pent not initialised correctly";
-					exit(1);
+					num_skipped++;
 				}
-
-				if (string(pent->d_name) == "." || string(pent->d_name) == "..") {} //do not include current and parent directory
-
 				else
 				{
-					if (count_files >= kMaxNumFiles)
-					{
-						num_skipped++;
-					}
-					else
-					{
-						array_of_indexes[count_files].file_name = string(pent->d_name);
-						count_files++;
-					}
+					array_of_indexes[count_files].file_name = string(pent->d_name);
+					count_files++;
 				}
 			}
 		}
-
 	}
 
 	if (num_skipped > 0)
 	{
-		cout << "\n*" << num_skipped << " cpp files were skipped*\n";
+		cout << "\n*" << num_skipped << " .cpp files were skipped*\n";
 	}
 
 	closedir(pdir); //close the directory when done reading
@@ -146,17 +138,17 @@ int main() //all parts of program coded by Jason and Robert
 		lines_in_file.open(file_path.str());
 		while (getline(lines_in_file, line))
 		{
-			array_of_indexes[i].number_of_lines++; //NUMBER OF LINES WITH CODE IN THEM
+			array_of_indexes[i].number_of_lines++; //number of lines of code
 			lines_in_file >> string_in;
 		}
 		lines_in_file.close();
 
 		in_file.open(file_path.str());	//pass in file_path as string
-		while (!in_file.eof()) {			//READ EACH STRING
+		while (!in_file.eof()) {		//Read each string
 
 			in_file >> string_in;
 			array_of_indexes[i].number_of_words++;
-			////check if contains selective/iterative
+			//check if contains selective/iterative
 			if (string_in == "for" || string_in == "while" || string_in == "do while")
 			{
 				array_of_indexes[i].count_iterative++;
@@ -170,13 +162,12 @@ int main() //all parts of program coded by Jason and Robert
 		}
 		in_file.close(); //remember to close file
 
+		//calculate similarity index metric
 		array_of_indexes[i].index_metric =
-			(double(array_of_indexes[i].count_iterative) + double(array_of_indexes[i].count_selective))
-			* double(array_of_indexes[i].number_of_words) / double(array_of_indexes[i].number_of_lines);
-
+			((array_of_indexes[i].count_iterative) + (array_of_indexes[i].count_selective))
+			* double(array_of_indexes[i].number_of_words) / (array_of_indexes[i].number_of_lines);
 	}
 
-	cout << "\nSORTING BY INDEX METRICS\n";
 	/***************************************************************************************
 	*    Usage: modified
 	*    Title: Sorting an array using selection sort
@@ -184,15 +175,16 @@ int main() //all parts of program coded by Jason and Robert
 	*    Availability: http://www.learncpp.com/cpp-tutorial/64-sorting-an-array-using-selection-sort/
 	***************************************************************************************/
 
-	// Step through each element of the array
-	for (int start_index = 0; start_index < count_files; ++start_index)
+	//Sort by index metric
+	cout << "\nSorting by index metrics:\n";
+	for (int start_index = 0; start_index < count_files; start_index++)
 	{
-		// smallestIndex is the index of the smallest element we've encountered so far.
+		// smallest_index is the index of the smallest element encountered so far.
 		int smallest_index = start_index;
-		// Look for smallest element remaining in the array (starting at startIndex+1)
-		for (int current_index = start_index + 1; current_index < count_files; ++current_index)
+		// Look for smallest element remaining in the array (starting at start_index+1)
+		for (int current_index = start_index + 1; current_index < count_files; current_index++)
 		{
-			// If the current element is smaller than our previously found smallest
+			// If the current element is smaller than the previously found smallest
 			if (array_of_indexes[current_index].index_metric < array_of_indexes[smallest_index].index_metric)
 				// This is the new smallest number for this iteration
 				smallest_index = current_index;
@@ -210,19 +202,18 @@ int main() //all parts of program coded by Jason and Robert
 
 	for (int i = 0; i < count_files; i++)
 	{
-		cout << endl << array_of_indexes[i].file_name;
-		cout << "\n   FILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
-		cout << "   FILE CONTAINS: " << array_of_indexes[i].count_selective << " SELECTIVE STATEMENTS\n";
-		cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << endl;
-		cout << "   Word count: " << array_of_indexes[i].number_of_words << endl;
+		cout << "\n" << array_of_indexes[i].file_name;
+		cout << "\n   File contains: " << array_of_indexes[i].count_iterative << " Iterative statements\n";
+		cout << "   File contains: " << array_of_indexes[i].count_selective << " Selective statements\n";
+		cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << "\n";
+		cout << "   Word count: " << array_of_indexes[i].number_of_words << "\n";
 		//format print statement to 2 decimal places for readability
-		cout << setprecision(2) << fixed << "   INDEX METRIC: " << array_of_indexes[i].index_metric << endl;
+		cout << setprecision(2) << fixed << "   Index Metric: " << array_of_indexes[i].index_metric << "\n";
 	}
 
 	cout << endl;
 	system("pause");
 	return 0;
 }
-
 //http://www.cplusplus.com/reference/string/string/back/
 //http://stackoverflow.com/questions/2340281/check-if-a-string-contains-a-string-in-c
