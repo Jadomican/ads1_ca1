@@ -116,12 +116,12 @@ int main() //all parts of program coded by Jason and Robert
 
 	closedir(pdir); //close the directory when done reading
 
-					/***************************************************************************************
-					*    Usage: based on
-					*    Title: How do you make an array of structs in C?
-					*    Date:  27/10/2016
-					*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
-					***************************************************************************************/
+	/***************************************************************************************
+	*    Usage: based on
+	*    Title: How do you make an array of structs in C?
+	*    Date:  27/10/2016
+	*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
+	***************************************************************************************/
 
 	for (int i = 0; i < count_files; i++)
 	{
@@ -168,32 +168,10 @@ int main() //all parts of program coded by Jason and Robert
 			(double(array_of_indexes[i].count_iterative) + double(array_of_indexes[i].count_selective))
 			* double(array_of_indexes[i].number_of_words) / double(array_of_indexes[i].number_of_lines);
 
-		/***************************************************************************************
-		*    Usage: modified
-		*    Title: Show two digits after decimal point in c++
-		*    Date: 04/11/2016
-		*    Availability: http://stackoverflow.com/questions/16280069/show-two-digits-after-decimal-point-in-c
-		***************************************************************************************/
-
-		cout << endl << array_of_indexes[i].file_name;
-		cout << "\n   FILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
-		cout << "   FILE CONTAINS: " << array_of_indexes[i].count_selective << " SELECTIVE STATEMENTS\n";
-		cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << endl;
-		cout << "   Word count: " << array_of_indexes[i].number_of_words << endl;
-
-		//format print statement to 2 decimal places for readability
-		cout << setprecision(2) << fixed << "   INDEX METRIC: " << array_of_indexes[i].index_metric << endl;
 	}
 
-	cout << "\nSORTING BY INDEX METRICS\n\n";
-
-	double array_sim_indexes[kMaxNumFiles];
-	for (int i = 0; i < count_files; i++)
-	{
-		array_sim_indexes[i] = array_of_indexes[i].index_metric;
-	}
-
-	/***************************************************************************************
+	cout << "\nSORTING BY INDEX METRICS\n";
+a	/***************************************************************************************
 	*    Usage: modified
 	*    Title: Sorting an array using selection sort
 	*    Date:  1/11/2016
@@ -209,25 +187,30 @@ int main() //all parts of program coded by Jason and Robert
 		for (int currentIndex = startIndex + 1; currentIndex < kMaxNumFiles; ++currentIndex)
 		{
 			// If the current element is smaller than our previously found smallest
-			if (array_sim_indexes[currentIndex] < array_sim_indexes[smallestIndex])
+			if (array_of_indexes[currentIndex].index_metric < array_of_indexes[smallestIndex].index_metric)
 				// This is the new smallest number for this iteration
 				smallestIndex = currentIndex;
 		}
 		// Swap our start element with our smallest element
-		swap(array_sim_indexes[startIndex], array_sim_indexes[smallestIndex]);
+		swap(array_of_indexes[startIndex], array_of_indexes[smallestIndex]);
 	}
 
-	//DOESN'T WORK CORRECTLY ATM
+	/***************************************************************************************
+	*    Usage: modified
+	*    Title: Show two digits after decimal point in c++
+	*    Date: 04/11/2016
+	*    Availability: http://stackoverflow.com/questions/16280069/show-two-digits-after-decimal-point-in-c
+	***************************************************************************************/
+
 	for (int i = 0; i < count_files; i++)
 	{
-		cout << endl;
-		for (int j = 0; j < count_files; j++)
-		{
-			if (array_of_indexes[j].index_metric == array_sim_indexes[i])
-			{
-				cout << array_of_indexes[i].file_name << " has an index matrix of " << array_of_indexes[i].index_metric << endl;
-			}
-		}
+		cout << endl << array_of_indexes[i].file_name;
+		cout << "\n   FILE CONTAINS: " << array_of_indexes[i].count_iterative << " ITERATIVE STATEMENTS\n";
+		cout << "   FILE CONTAINS: " << array_of_indexes[i].count_selective << " SELECTIVE STATEMENTS\n";
+		cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << endl;
+		cout << "   Word count: " << array_of_indexes[i].number_of_words << endl;
+		//format print statement to 2 decimal places for readability
+		cout << setprecision(2) << fixed << "   INDEX METRIC: " << array_of_indexes[i].index_metric << endl;
 	}
 
 	cout << endl;
