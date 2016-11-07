@@ -231,7 +231,7 @@ int main() //all parts of program coded by Jason and Robert
 						&& (array_of_indexes[i].index_metric > (array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * plagiarism_percent)))
 					{
 						cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
-							<< " may be plagiarised (within " << plagiarism_percent * 100 << " percent)" << "\n";
+							<< " may be plagiarised (within " << plagiarism_percent * 100 << "%)" << "\n";
 					}
 				}
 			}
