@@ -45,8 +45,8 @@ int main()  // All parts of program coded by Jason and Robert
 	const int kMaxNumFiles = 4;                      // Max number of files to be processed
 	SimilarityIndex array_of_indexes[kMaxNumFiles];  // Array of structs
 	string directory;								 // Directory to be scanned
-	DIR *pdir = NULL;								 // Pointer to a directory
-	struct dirent *pent = NULL;						 // Dirent pointer
+	DIR *pointer_dir = NULL;						 // Pointer to a directory
+	struct dirent *pointer_ent = NULL;				 // Used when reading a directory
 	int count_files;
 	int num_skipped;						 // Number of files in directory skipped based on max files constant
 	const double kPlagiarismPercent = 0.15;  // Percentage of similarity checked
@@ -91,13 +91,13 @@ int main()  // All parts of program coded by Jason and Robert
 			*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
 			***************************************************************************************/
 
-			pdir = opendir(directory.c_str());  // Opens specified directory
+			pointer_dir = opendir(directory.c_str());  // Opens specified directory
 
-			if (pdir == NULL)  // If no directory found, notify user
+			if (pointer_dir == NULL)  // If no directory found, notify user
 			{
 				cout << "\nDirectory not found, try again\n\n";
 			}
-		} while (pdir == NULL);
+		} while (pointer_dir == NULL);
 
 		/***************************************************************************************
 		*    Usage: modified
@@ -106,9 +106,9 @@ int main()  // All parts of program coded by Jason and Robert
 		*    Availability: http://stackoverflow.com/questions/51949/how-to-get-file-extension-from-string-in-c
 		***************************************************************************************/
 
-		while (pent = readdir(pdir))  // While something left to list - read next directory entry
+		while (pointer_ent = readdir(pointer_dir))  // While something left to list - read next directory entry
 		{
-			if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) == "cpp")  // If .cpp file type
+			if (string(pointer_ent->d_name).substr(string(pointer_ent->d_name).find_last_of(".") + 1) == "cpp")  // If .cpp file type
 			{
 				if (count_files >= kMaxNumFiles)  // Only process max number of files
 				{
@@ -116,7 +116,7 @@ int main()  // All parts of program coded by Jason and Robert
 				}
 				else
 				{
-					array_of_indexes[count_files].file_name = string(pent->d_name);
+					array_of_indexes[count_files].file_name = string(pointer_ent->d_name);
 					count_files++;
 				}
 			}
@@ -133,12 +133,12 @@ int main()  // All parts of program coded by Jason and Robert
 				cout << "\n*" << num_skipped << " .cpp files were skipped*\n";
 			}
 
-			closedir(pdir);  // Close the directory when done reading
+			closedir(pointer_dir);  // Close the directory when done reading
 
 			/***************************************************************************************
 			*    Usage: based on
 			*    Title: How do you make an array of structs in C?
-			*    Date:  27/10/2016
+            *    Date: 27/10/2016
 			*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
 			***************************************************************************************/
 
@@ -171,7 +171,7 @@ int main()  // All parts of program coded by Jason and Robert
 
 				in_file.open(file_path.str());	 // Pass in file_path as string
 
-				while (!in_file.eof()) {		 // Read each string
+				while (!in_file.eof()) {		 // Read while not at end of file
 
 					in_file >> string_in;
 					array_of_indexes[i].word_count++;
@@ -227,6 +227,7 @@ int main()  // All parts of program coded by Jason and Robert
 			*    Availability: http://stackoverflow.com/questions/16280069/show-two-digits-after-decimal-point-in-c
 			***************************************************************************************/
 
+			// Display information about each file
 			for (int i = 0; i < count_files; i++)
 			{
 				cout << "\n" << array_of_indexes[i].file_name;
@@ -240,11 +241,11 @@ int main()  // All parts of program coded by Jason and Robert
 
 			if (count_files > 1)
 			{
-				for (int i = 0; i < count_files; i++)  // Determine similarity
+				for (int i = 0; i < count_files; i++)  // Determine similarity (within percentage range)
 				{
 					for (int j = i + 1; j < count_files + 1; j++)
 					{
-						if (array_of_indexes[i].index_metric < 
+						if (array_of_indexes[i].index_metric <
 							(array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * kPlagiarismPercent)
 							&& (array_of_indexes[i].index_metric >
 							(array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * kPlagiarismPercent)))
@@ -261,14 +262,14 @@ int main()  // All parts of program coded by Jason and Robert
 			}
 		}
 
+		// Allow user to run program again without re-running
 		cout << "\nWould you like to go again? Y to continue...\nChoice: ";
 		cin >> choice;
 
 		if (choice == 'Y' || choice == 'y')
 		{
 			continue_run = true;
-			system("cls");
-
+			system("cls");  // Clears the screen
 		}
 		else
 		{
