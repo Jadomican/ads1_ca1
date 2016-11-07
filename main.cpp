@@ -48,6 +48,7 @@ int main() //all parts of program coded by Jason and Robert
 	DIR *pdir = NULL; // pointer to a directory
 	struct dirent *pent = NULL; //dirent pointer
 	int count_files = 0;
+	int num_skipped = 0; //number of files in directory skipped based on max files constant
 	double plagiarism_percent = 0.30; //percentage of similarity checked
 
 	cout << "**Plagiarism Detector (Max " << kMaxNumFiles << " .cpp files)**";
@@ -64,6 +65,13 @@ int main() //all parts of program coded by Jason and Robert
 			system("pause");
 			exit(1);
 		}
+
+		/***************************************************************************************
+		*    Usage: modified
+		*    Title: String back() method
+		*    Date: 30/10/2016
+		*    Availability: http://www.cplusplus.com/reference/string/string/back/
+		***************************************************************************************/
 
 		if (directory.back() != '/') //ensure last character is a '/' ('\' works too)
 		{
@@ -84,8 +92,6 @@ int main() //all parts of program coded by Jason and Robert
 			cout << "\nDirectory not found, try again\n\n";
 		}
 	} while (pdir == NULL);
-
-	int num_skipped = 0; //number of files in directory skipped based on max files constant
 
 	/***************************************************************************************
 	*    Usage: modified
@@ -163,7 +169,6 @@ int main() //all parts of program coded by Jason and Robert
 				{
 					array_of_indexes[i].count_selective++;
 				}
-
 			}
 			in_file.close(); //remember to close file
 
@@ -241,4 +246,3 @@ int main() //all parts of program coded by Jason and Robert
 	system("pause");
 	return 0;
 }
-//http://www.cplusplus.com/reference/string/string/back/
