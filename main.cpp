@@ -1,8 +1,9 @@
 /*
+*	ADS1 CA1
+*
 *	Jason Domican		X00119321
 *	Robert Fitzgerald	X00123156
 *
-*	ADS1 CA1
 *	Utilises dirent.h by Toni Rönkkö https://github.com/tronkko
 */
 
@@ -14,19 +15,19 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
-#include "dirent.h" //used to access directories
+#include "dirent.h"  // Used to access directories
 using namespace std;
 
-int main() //all parts of program coded by Jason and Robert
+int main()  // All parts of program coded by Jason and Robert
 {
 	struct SimilarityIndex
 	{
-		int count_selective = 0; // count of selective statements
-		int count_iterative = 0; // count of iterative statements
-		int number_of_lines = 0; //lines of CODE
-		int number_of_words = 0; //word count
+		int count_selective = 0;  // Count of selective statements
+		int count_iterative = 0;  // Count of iterative statements
+		int number_of_lines = 0;  // Lines of CODE
+		int number_of_words = 0;  // Word count
 		string file_name;
-		double index_metric; //determines similarity
+		double index_metric;  // Determines similarity
 	};
 
 	/***************************************************************************************
@@ -41,14 +42,14 @@ int main() //all parts of program coded by Jason and Robert
 	*    Availability: https://www.daniweb.com/programming/software-development/threads/369727/open-txt-files-one-by-one-from-directory
 	***************************************************************************************/
 
-	const int kMaxNumFiles = 4; //MAX number of files to be processed
+	const int kMaxNumFiles = 4;  // Max number of files to be processed
 	SimilarityIndex array_of_indexes[kMaxNumFiles];
 	string directory;
-	DIR *pdir = NULL; // pointer to a directory
-	struct dirent *pent = NULL; //dirent pointer
+	DIR *pdir = NULL;  // Pointer to a directory
+	struct dirent *pent = NULL;  // Dirent pointer
 	int count_files;
-	int num_skipped; //number of files in directory skipped based on max files constant
-	double plagiarism_percent = 0.30; //percentage of similarity checked
+	int num_skipped;  // Number of files in directory skipped based on max files constant
+	double plagiarism_percent = 0.30;  // Percentage of similarity checked
 	bool continue_run = true;
 	char choice;
 	cout << "**Plagiarism Detector (Max " << kMaxNumFiles << " .cpp files)**\n";
@@ -63,7 +64,7 @@ int main() //all parts of program coded by Jason and Robert
 			cout << "Directory: ";
 			cin >> directory;
 
-			if (directory == "x" || directory == "X") //allow user to exit
+			if (directory == "x" || directory == "X")  // Allow user to exit
 			{
 				cout << "\nExiting...\n";
 				system("pause");
@@ -77,7 +78,7 @@ int main() //all parts of program coded by Jason and Robert
 			*    Availability: http://www.cplusplus.com/reference/string/string/back/
 			***************************************************************************************/
 
-			if (directory.back() != '/') //ensure last character is a '/' ('\' works too)
+			if (directory.back() != '/')  // Ensure last character is a '/' ('\' works too)
 			{
 				directory += '/';
 			}
@@ -89,7 +90,7 @@ int main() //all parts of program coded by Jason and Robert
 			*    Availability: http://stackoverflow.com/questions/11821491/converting-string-to-cstring-in-c
 			***************************************************************************************/
 
-			pdir = opendir(directory.c_str()); //opens specified directory
+			pdir = opendir(directory.c_str());  // Opens specified directory
 
 			if (pdir == NULL)
 			{
@@ -104,9 +105,9 @@ int main() //all parts of program coded by Jason and Robert
 		*    Availability: http://stackoverflow.com/questions/51949/how-to-get-file-extension-from-string-in-c
 		***************************************************************************************/
 
-		while (pent = readdir(pdir)) //while something left to list - read next directory entry
+		while (pent = readdir(pdir))  // While something left to list - read next directory entry
 		{
-			if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) == "cpp") //if cpp file type
+			if (string(pent->d_name).substr(string(pent->d_name).find_last_of(".") + 1) == "cpp")  // If cpp file type
 			{
 				if (count_files >= kMaxNumFiles)
 				{
@@ -120,35 +121,35 @@ int main() //all parts of program coded by Jason and Robert
 			}
 		}
 
-		if (count_files < 1) //if no cpp files found
+		if (count_files < 1)  // If no cpp files found
 		{
 			cout << "\n*No .cpp files found*\n";
 		}
-		else //else continue
+		else  // Else continue
 		{
 			if (num_skipped > 0)
 			{
 				cout << "\n*" << num_skipped << " .cpp files were skipped*\n";
 			}
 
-			closedir(pdir); //close the directory when done reading
+			closedir(pdir);  // Close the directory when done reading
 
-			/***************************************************************************************
-			*    Usage: based on
-			*    Title: How do you make an array of structs in C?
-			*    Date:  27/10/2016
-			*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
-			***************************************************************************************/
+							/***************************************************************************************
+							*    Usage: based on
+							*    Title: How do you make an array of structs in C?
+							*    Date:  27/10/2016
+							*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
+							***************************************************************************************/
 
 			for (int i = 0; i < count_files; i++)
 			{
-				array_of_indexes[i].count_selective = 0; //reset values (for if user decides to run again)
+				array_of_indexes[i].count_selective = 0;  // Reset values (for if user decides to run again)
 				array_of_indexes[i].count_iterative = 0;
 				array_of_indexes[i].number_of_lines = 0;
 				array_of_indexes[i].number_of_words = 0;
 				array_of_indexes[i].index_metric = 0;
 
-				string string_in; //reads only a SINGLE string in at a time
+				string string_in;  // Reads only a SINGLE string in at a time
 				stringstream file_path;
 				file_path << directory << array_of_indexes[i].file_name; //ignore . AND .. in file listing
 
@@ -182,7 +183,7 @@ int main() //all parts of program coded by Jason and Robert
 				}
 				in_file.close(); //remember to close file
 
-				//calculate similarity index metric
+								 //calculate similarity index metric
 				array_of_indexes[i].index_metric =
 					((array_of_indexes[i].count_iterative) + (array_of_indexes[i].count_selective))
 					* double(array_of_indexes[i].number_of_words) / (array_of_indexes[i].number_of_lines);
@@ -238,7 +239,7 @@ int main() //all parts of program coded by Jason and Robert
 					for (int j = i + 1; j < count_files + 1; j++)
 					{
 						if (array_of_indexes[i].index_metric < (array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * plagiarism_percent)
-							&& (array_of_indexes[i].index_metric > (array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * plagiarism_percent)))
+							&& (array_of_indexes[i].index_metric >(array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * plagiarism_percent)))
 						{
 							cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
 								<< " may be plagiarised (within " << plagiarism_percent * 100 << "%)" << "\n";
@@ -254,7 +255,7 @@ int main() //all parts of program coded by Jason and Robert
 
 		cout << "\nWould you like to go again? Y to continue...\nChoice: ";
 		cin >> choice;
-		
+
 		if (choice == 'Y' || choice == 'y')
 		{
 			continue_run = true;
