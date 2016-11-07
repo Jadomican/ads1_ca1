@@ -10,7 +10,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-//#include <Windows.h>
 #include <sstream>
 #include <vector>
 #include <iomanip>
