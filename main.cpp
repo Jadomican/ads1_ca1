@@ -12,7 +12,6 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <vector>
 #include <iomanip>
 #include <algorithm>
 #include "dirent.h"  // Used to access directories
@@ -57,7 +56,7 @@ int main()  // All parts of program coded by Jason and Robert
 
 	while (continue_run)
 	{
-		cout << "Input directory to be scanned or press x to exit)\n\n";
+		cout << "Input directory to be scanned or press x to exit\n\n";
 		count_files = 0;  // Set variables to 0 at beginning of program for re-run
 		num_skipped = 0;
 		do
@@ -165,11 +164,11 @@ int main()  // All parts of program coded by Jason and Robert
 				*    Availability: http://stackoverflow.com/questions/18318980/taking-input-of-a-string-word-by-word
 				***************************************************************************************/
 
-				in_file.open(file_path.str());  // Open file to process
+				in_file.open(file_path.str());     // Open file to process
 
 				while (getline(in_file, line_in))  // While another line to read, read line
 				{
-					if (line_in.length() > 0)  // If line has code, increase counter
+					if (line_in.length() > 0)	   // If line has code, increase counter
 					{
 						array_of_indexes[i].number_of_lines++;
 					}
@@ -207,7 +206,6 @@ int main()  // All parts of program coded by Jason and Robert
 			***************************************************************************************/
 
 			//Sort by index metric
-			cout << "\nSorting by index metrics:\n";
 			for (int start_index = 0; start_index < count_files; start_index++)
 			{
 				// smallest_index is the index of the smallest element encountered so far.
@@ -232,19 +230,24 @@ int main()  // All parts of program coded by Jason and Robert
 			***************************************************************************************/
 
 			// Display information about each file
+			cout << "\n\t\t\t  Values";
 			for (int i = 0; i < count_files; i++)
 			{
+				cout << "\n--------------------------------";
 				cout << "\n" << array_of_indexes[i].file_name;
-				cout << "\n   File contains: " << array_of_indexes[i].count_iterative << " Iterative statements\n";
-				cout << "   File contains: " << array_of_indexes[i].count_selective << " Selective statements\n";
-				cout << "   Number of lines (of code) in text file: " << array_of_indexes[i].number_of_lines << "\n";
-				cout << "   Word count: " << array_of_indexes[i].word_count << "\n";
+				cout << "\n   Iterative statements:   " << array_of_indexes[i].count_iterative << "\n";
+				cout << "   Selective statements:   " << array_of_indexes[i].count_selective << "\n";
+				cout << "   Lines (of code):\t   " << array_of_indexes[i].number_of_lines << "\n";
+				cout << "   Word count:\t\t   "<< array_of_indexes[i].word_count << "\n";
 				// Format print statement to 2 decimal places for readability
-				cout << setprecision(2) << fixed << "   Index Metric: " << array_of_indexes[i].index_metric << "\n";
+				cout << setprecision(2) << fixed << "   Index Metric:\t   " << array_of_indexes[i].index_metric << "\n";
 			}
 
 			if (count_files > 1)
 			{
+				cout << "\n--------------------------------\n\n*Plagiarism Report*\n";
+				cout << "\nFiles that may be plagiarised within " << kPlagiarismPercent * 100 << "% range:\n\n";
+
 				for (int i = 0; i < count_files; i++)  // Determine similarity (within percentage range)
 				{
 					for (int j = i + 1; j < count_files + 1; j++)
@@ -254,8 +257,10 @@ int main()  // All parts of program coded by Jason and Robert
 							&& (array_of_indexes[i].index_metric >
 							(array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * kPlagiarismPercent)))
 						{
-							cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
-								<< " may be plagiarised (within " << kPlagiarismPercent * 100 << "% range)" << "\n";
+							cout << "--> " << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name << "\n";
+
+							//cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
+							//	<< " may be plagiarised (within " << kPlagiarismPercent * 100 << "% range)" << "\n";
 						}
 					}
 				}
