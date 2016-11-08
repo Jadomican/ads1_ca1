@@ -46,7 +46,7 @@ int main()  // All parts of program coded by Jason and Robert
 	SimilarityIndex array_of_indexes[kMaxNumFiles];  // Array of structs
 	string directory;								 // Directory to be scanned
 	DIR *pointer_dir = NULL;						 // Pointer to a directory
-	struct dirent *pointer_ent = NULL;				 // Used when reading a directory
+	struct dirent *pointer_dir_entry = NULL;		 // Used when reading a directory
 	int count_files;
 	int num_skipped;						 // Number of files in directory skipped based on max files constant
 	const double kPlagiarismPercent = 0.15;  // Percentage of similarity checked
@@ -106,9 +106,9 @@ int main()  // All parts of program coded by Jason and Robert
 		*    Availability: http://stackoverflow.com/questions/51949/how-to-get-file-extension-from-string-in-c
 		***************************************************************************************/
 
-		while (pointer_ent = readdir(pointer_dir))  // While something left to list - read next directory entry
+		while (pointer_dir_entry = readdir(pointer_dir))  // While something left to list - read next directory entry
 		{
-			if (string(pointer_ent->d_name).substr(string(pointer_ent->d_name).find_last_of(".") + 1) == "cpp")  // If .cpp file type
+			if (string(pointer_dir_entry->d_name).substr(string(pointer_dir_entry->d_name).find_last_of(".") + 1) == "cpp")  // If .cpp file type
 			{
 				if (count_files >= kMaxNumFiles)  // Only process max number of files
 				{
@@ -116,11 +116,13 @@ int main()  // All parts of program coded by Jason and Robert
 				}
 				else
 				{
-					array_of_indexes[count_files].file_name = string(pointer_ent->d_name);
+					array_of_indexes[count_files].file_name = string(pointer_dir_entry->d_name);  //store filename in struct member variable
 					count_files++;
 				}
 			}
 		}
+
+		closedir(pointer_dir);  // Close the directory when done reading
 
 		if (count_files < 1)  // If no cpp files found
 		{
@@ -133,57 +135,59 @@ int main()  // All parts of program coded by Jason and Robert
 				cout << "\n*" << num_skipped << " .cpp files were skipped*\n";
 			}
 
-			closedir(pointer_dir);  // Close the directory when done reading
-
 			/***************************************************************************************
-			*    Usage: based on
-			*    Title: How do you make an array of structs in C?
-            *    Date: 27/10/2016
-			*    Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
+			*	Usage: based on
+			*	Title: How do you make an array of structs in C?
+			*	Date: 27/10/2016
+			*	Availability: http://stackoverflow.com/questions/10468128/how-do-you-make-an-array-of-structs-in-c
 			***************************************************************************************/
 
 			// Loop to scan each file for index metric
 			for (int i = 0; i < count_files; i++)
 			{
-				array_of_indexes[i].count_selective = 0;  // Reset values (if user decides to run again)
+				array_of_indexes[i].count_selective = 0;  // Reset values (needed if user decides to loop again)
 				array_of_indexes[i].count_iterative = 0;
 				array_of_indexes[i].number_of_lines = 0;
 				array_of_indexes[i].word_count = 0;
 				array_of_indexes[i].index_metric = 0;
 
-				string string_in;		 // Reads only a single string in at a time
 				stringstream file_path;
-				string line;
-				ifstream lines_in_file;  // Read number of lines
-				ifstream in_file;		 // Read number of words/selective/iterative
+				string line_in;			// Used to count number of lines (of code)
+				ifstream in_file;		// Read number of lines
+				string word;
 
 				file_path << directory << array_of_indexes[i].file_name;
 
-				lines_in_file.open(file_path.str());  // Open file to count number of lines
+				/***************************************************************************************
+				*    Usage: modified
+				*    Title: Taking input of a string word by word
+				*    Date:  06/11/2016
+				*    Availability: http://stackoverflow.com/questions/18318980/taking-input-of-a-string-word-by-word
+				***************************************************************************************/
 
-				while (getline(lines_in_file, line))  // While another line to read
+				in_file.open(file_path.str());  // Open file to process
+
+				while (getline(in_file, line_in))  // While another line to read, read line
 				{
-					array_of_indexes[i].number_of_lines++;  // Number of lines (of code)
-					lines_in_file >> string_in;
-				}
-
-				lines_in_file.close();  // Remember to close file
-
-				in_file.open(file_path.str());	 // Pass in file_path as string
-
-				while (!in_file.eof()) {		 // Read while not at end of file
-
-					in_file >> string_in;
-					array_of_indexes[i].word_count++;
-					// Check if contains selective/iterative
-					if (string_in == "for" || string_in == "while" || string_in == "do")
+					if (line_in.length() > 0)  // If line has code, increase counter
 					{
-						array_of_indexes[i].count_iterative++;
+						array_of_indexes[i].number_of_lines++;
 					}
 
-					if (string_in == "if" || string_in == "switch" || string_in == "case")
+					stringstream line_stream(line_in);  // Put line into stringstream to check each word
+					while (line_stream >> word)			// While another word in line
 					{
-						array_of_indexes[i].count_selective++;
+						array_of_indexes[i].word_count++;
+						// Check if word contains selective/iterative statement
+						if (word == "for" || word == "while" || word == "do")
+						{
+							array_of_indexes[i].count_iterative++;
+						}
+
+						if (word == "if" || word == "switch" || word == "case")
+						{
+							array_of_indexes[i].count_selective++;
+						}
 					}
 				}
 
@@ -206,7 +210,7 @@ int main()  // All parts of program coded by Jason and Robert
 			cout << "\nSorting by index metrics:\n";
 			for (int start_index = 0; start_index < count_files; start_index++)
 			{
-				// Smallest_index is the index of the smallest element encountered so far.
+				// smallest_index is the index of the smallest element encountered so far.
 				int smallest_index = start_index;
 				// Look for smallest element remaining in the array (starting at start_index+1)
 				for (int current_index = start_index + 1; current_index < count_files; current_index++)
@@ -251,18 +255,18 @@ int main()  // All parts of program coded by Jason and Robert
 							(array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * kPlagiarismPercent)))
 						{
 							cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
-								<< " may be plagiarised (within " << kPlagiarismPercent * 100 << "%)" << "\n";
+								<< " may be plagiarised (within " << kPlagiarismPercent * 100 << "% range)" << "\n";
 						}
 					}
 				}
 			}
 			else
 			{
-				cout << "\n*Only one file found, similarity cannot be determined*";
+				cout << "\n*Only one .cpp file found, similarity cannot be determined*";
 			}
 		}
 
-		// Allow user to run program again without re-running
+		// Allow user to repeat program again without re-running
 		cout << "\nWould you like to go again? Y to continue...\nChoice: ";
 		cin >> choice;
 
@@ -273,9 +277,9 @@ int main()  // All parts of program coded by Jason and Robert
 		}
 		else
 		{
+			cout << "\nExiting...";
 			continue_run = false;
 		}
-
 	}
 
 	cout << endl;
