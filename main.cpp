@@ -48,7 +48,10 @@ int main()  // All parts of program coded by Jason and Robert
 	struct dirent *pointer_dir_entry = NULL;		 // Used when reading a directory
 	int count_files;
 	int num_skipped;						 // Number of files in directory skipped based on max files constant
-	const double kPlagiarismPercent = 0.15;  // Percentage of similarity checked
+	const double kPlagiarismPercentHigh = 0.10;  // Percentage of similarity checked
+	const double kPlagiarismPercentMedium = 0.25;  // Percentage of similarity checked
+	const double kPlagiarismPercentLow = 0.40;  // Percentage of similarity checked
+
 	bool continue_run = true;				 // Condition to continue running
 	char choice;							 // User input to continue program
 
@@ -192,7 +195,7 @@ int main()  // All parts of program coded by Jason and Robert
 
 				in_file.close();  // Remember to close file
 
-				// Calculate similarity index metric
+								  // Calculate similarity index metric
 				array_of_indexes[i].index_metric =
 					((array_of_indexes[i].count_iterative) + (array_of_indexes[i].count_selective))
 					* double(array_of_indexes[i].word_count) / (array_of_indexes[i].number_of_lines);
@@ -238,7 +241,7 @@ int main()  // All parts of program coded by Jason and Robert
 				cout << "\n   Iterative statements:   " << array_of_indexes[i].count_iterative << "\n";
 				cout << "   Selective statements:   " << array_of_indexes[i].count_selective << "\n";
 				cout << "   Lines (of code):\t   " << array_of_indexes[i].number_of_lines << "\n";
-				cout << "   Word count:\t\t   "<< array_of_indexes[i].word_count << "\n";
+				cout << "   Word count:\t\t   " << array_of_indexes[i].word_count << "\n";
 				// Format print statement to 2 decimal places for readability
 				cout << setprecision(2) << fixed << "   Index Metric:\t   " << array_of_indexes[i].index_metric << "\n";
 			}
@@ -246,48 +249,76 @@ int main()  // All parts of program coded by Jason and Robert
 			if (count_files > 1)
 			{
 				cout << "\n--------------------------------\n\n*Plagiarism Report*\n";
-				cout << "\nFiles that may be plagiarised within " << kPlagiarismPercent * 100 << "% range:\n\n";
 
+				cout << "\n*High Similarity*\n";
 				for (int i = 0; i < count_files; i++)  // Determine similarity (within percentage range)
 				{
 					for (int j = i + 1; j < count_files + 1; j++)
 					{
 						if (array_of_indexes[i].index_metric <
-							(array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * kPlagiarismPercent)
+							(array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * kPlagiarismPercentHigh)
 							&& (array_of_indexes[i].index_metric >
-							(array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * kPlagiarismPercent)))
+							(array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * kPlagiarismPercentHigh)))
 						{
 							cout << "--> " << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name << "\n";
-
-							//cout << "\n" << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name
-							//	<< " may be plagiarised (within " << kPlagiarismPercent * 100 << "% range)" << "\n";
 						}
 					}
 				}
+
+				cout << "\n*Medium Similarity*\n";
+				for (int i = 0; i < count_files; i++)  // Determine similarity (within percentage range)
+				{
+					for (int j = i + 1; j < count_files + 1; j++)
+					{
+						if (array_of_indexes[i].index_metric <
+							(array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * kPlagiarismPercentMedium)
+							&& (array_of_indexes[i].index_metric >
+							(array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * kPlagiarismPercentMedium)))
+						{
+							cout << "--> " << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name << "\n";
+						}
+					}
+				}
+
+				cout << "\n*Low Similarity*\n";
+				for (int i = 0; i < count_files; i++)  // Determine similarity (within percentage range)
+				{
+					for (int j = i + 1; j < count_files + 1; j++)
+					{
+						if (array_of_indexes[i].index_metric <
+							(array_of_indexes[j].index_metric + array_of_indexes[j].index_metric * kPlagiarismPercentLow)
+							&& (array_of_indexes[i].index_metric >
+							(array_of_indexes[j].index_metric - array_of_indexes[j].index_metric * kPlagiarismPercentLow)))
+						{
+							cout << "--> " << array_of_indexes[i].file_name << " and " << array_of_indexes[j].file_name << "\n";
+						}
+					}
+				}
+
 			}
 			else
 			{
 				cout << "\n*Only one .cpp file found, similarity cannot be determined*";
 			}
-		}
-
-		// Allow user to repeat program again without re-running
-		cout << "\nWould you like to go again? Y to continue...\nChoice: ";
-		cin >> choice;
-
-		if (choice == 'Y' || choice == 'y')
-		{
-			continue_run = true;
-			system("cls");  // Clears the screen
-		}
-		else
-		{
-			cout << "\nExiting...";
-			continue_run = false;
-		}
 	}
 
-	cout << endl;
-	system("pause");
-	return 0;
+	// Allow user to repeat program again without re-running
+	cout << "\nWould you like to go again? Y to continue...\nChoice: ";
+	cin >> choice;
+
+	if (choice == 'Y' || choice == 'y')
+	{
+		continue_run = true;
+		system("cls");  // Clears the screen
+	}
+	else
+	{
+		cout << "\nExiting...";
+		continue_run = false;
+	}
+}
+
+cout << endl;
+system("pause");
+return 0;
 }
