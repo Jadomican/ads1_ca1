@@ -21,10 +21,10 @@ int main()  // All parts of program coded by Jason and Robert
 {
 	struct SimilarityIndex
 	{
-		int count_selective = 0;  // Count of selective statements
-		int count_iterative = 0;  // Count of iterative statements
-		int number_of_lines = 0;  // Lines (of code)
-		int word_count = 0;
+		int count_selective;  // Count of selective statements
+		int count_iterative;  // Count of iterative statements
+		int number_of_lines;  // Lines (of code)
+		int word_count;
 		string file_name;
 		double index_metric;  // Determines similarity
 	};
@@ -192,7 +192,7 @@ int main()  // All parts of program coded by Jason and Robert
 
 				in_file.close();  // Remember to close file
 
-								  // Calculate similarity index metric
+				// Calculate similarity index metric
 				array_of_indexes[i].index_metric =
 					((array_of_indexes[i].count_iterative) + (array_of_indexes[i].count_selective))
 					* double(array_of_indexes[i].word_count) / (array_of_indexes[i].number_of_lines);
@@ -205,7 +205,7 @@ int main()  // All parts of program coded by Jason and Robert
 			*    Availability: http://www.learncpp.com/cpp-tutorial/64-sorting-an-array-using-selection-sort/
 			***************************************************************************************/
 
-			//Sort by index metric
+			// Sort by index metric
 			for (int start_index = 0; start_index < count_files; start_index++)
 			{
 				// smallest_index is the index of the smallest element encountered so far.
